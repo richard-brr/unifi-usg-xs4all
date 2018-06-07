@@ -50,8 +50,8 @@
                                 },
                                 "mtu": "1492",
                                 "name-server": "none",
-                                "password": "kpn",
-                                "user-id": "xx-xx-xx-xx-xx-xx@internet"
+                                "password": "1234",
+                                "user-id": "<username>@xs4all.nl"
                             }
                         }
                     }
