@@ -22,43 +22,52 @@ There are a lot of useful posts out there, this one is a composition of those ar
           |
       vlan4 - iptv
       vlan6 - internet
-      vlan7 - voip (not used in this setup)
+      vlan7 - voip (sip client on sip.xs4all.nl)
           |
        +-----+
-       | USG |   - Ubiquity UniFi Security Gateway
+       | USG |   
        +-----+
-          |
-         lan
-          |
-      +--------+
-      | Switch |   - Ubiquity UniFi Managed Switch
-      +--------+
-       |  |  |
-       |  |  +-----------------------------+
-       |  |                                |
-       |  +-----------------+              |
-       |                    |              |
-+--------------+       +---------+      +-----+
-| IPTV Decoder |       | Wifi AP |      | NAS |
-+--------------+       +---------+      +-----+
-  - KPN IPTV                              - UniFi controller
+          |                    +-------+
+         lan           +-------| Unifi |
+          |            |       +-------+                               +---------+
+      +--------+   +---------+                  +----------------------| Printer |
+      | Switch |---| Wifi AP |                  |                      +---------+
+      +--------+   +---------+                  |
+       |  |  |                             +----------+      +-----+
+       |  |  +-----------------------------| EdgeLite |------| NAS |
+       |  |   +------+                     +----------+      +-----+      +--------------+
+       |  +---| KAKU |                          |   |+--------------------| IPTV Decoder |
+       |      +------+                          |                         +--------------+
+    +--------+                              +---------+
+    | Switch |                              | Wifi AP |  
+    +--------+                              +---------+
+      | | +-----------------------------------+---------+
+      | +---------------------¬               |         |
++--------------+       +-------------+      +-----+   +----+
+| IPTV Decoder |       | Mediaplayer |      | PS4 |   | TV |
++--------------+       +-------------+      +-----+   +----+
+  - KPN/XS4ALL IPTV
   - Netflix
 ```
 
 ## Hardware
 * [Ubiquity UniFi Security Gateway](https://www.ubnt.com/unifi-routing/usg/) - Enterprise Gateway Router with gigabit ethernet - model: USG or USG-PRO-4
-* [Ubiquity UniFi Controller](https://www.ubnt.com/software/) - Centralized management software for the Ubiquity UniFi family
+* [Ubiquity UniFi Controller](https://www.ubnt.com/software/) - Centralized management software for the Ubiquity UniFi family on a Raspberry Pi 3B+
+* [Ubiquity AP Lite accesspoint](https://www.ubnt.com/unifi/unifi-ap-ac-lite/) - 802.11ac Dual Radio Access Point - model: UAP‑AC‑LITE
+* [Ubiquity AP Lite accesspoint](https://www.ubnt.com/unifi/unifi-ap-ac-lite/) - 802.11ac Dual Radio Access Point - model: UAP‑AC‑LITE
+* [Netgear 5 ports switch](https://www.netgear.com/support/product/GS105Ev2.aspx) - GS105Ev2 – ProSAFE Plus 5-port Switch
+* [Netgear 5 ports switch](https://www.netgear.com/support/product/GS105Ev2.aspx) - GS105Ev2 – ProSAFE Plus 5-port Switch
 
 ## Further notes:
-* Voip services are excluded in this configuration (I'm not using them). Read the links below if you're interested in setting this up. Basically you'll bridge VLAN 7 to USG LAN2 and connect the Experiabox.
-* The Ubiquity UniFi controller is running in Linux environment.
+* I use sip.xs4all.nl as a voip server with a sip client or voip phone. Links below will guide you to bridge this setup to your Frizzbox to have voip as you would with a Frizz.
+* The Ubiquity UniFi controller is running in Linux environment on a Raspi 3B+ 2018.
 * Configuration is focused on IPV4. I don't bother setting up and securing IPV6.
 * This configuration guide references commands to be issued on multiple devices **USG** or the **UniFi Controller**. Always make sure you're connected to the right device.
 * When connected to **USG**, you're connected to EdgeOS. Double pressing *tab* will give you an overview of commands.
 
 ## Prerequisites
-1. To support routed IPTV make sure you're using a (managed) switch supporting IGMP snooping
-2. Have a Ubiquity UniFi Controller running. If not, see: https://miketabor.com/running-ubiquiti-unifi-controller-in-docker-on-synology-nas/
+1. To support routed IPTV make sure you're using a (managed) switch supporting IGMP snooping (GS105Ev2 is recommended by xs4all and sold in their online shop)
+2. Have a Ubiquity UniFi Controller running. If not, see: https://miketabor.com/running-ubiquiti-unifi-controller-in-docker-on-synology-nas/ or run it on a Raspberry
 3. Adopt, provision and upgrade your USG.
 4. Configure you're internal LAN setup (IP range(s) / DHCP / AP's / etc.).
 5. Connect the USG WAN port (eth0) to the FTTP NTU of KPN.
